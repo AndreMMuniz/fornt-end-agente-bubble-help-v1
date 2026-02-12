@@ -1,0 +1,158 @@
+'use client';
+
+import { useState, useCallback, useEffect } from 'react';
+import { Message, sendMessage as apiSendMessage } from '@/lib/api';
+
+const generateId = () => Math.random().toString(36).substring(2, 11);
+
+export type Conversation = {
+    id: string;
+    threadId: string;
+    title: string;
+    messages: Message[];
+    createdAt: number;
+};
+
+export function useChat() {
+    const [conversations, setConversations] = useState<Conversation[]>([]);
+    const [activeConversationId, setActiveConversationId] = useState<string>('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [userId, setUserId] = useState<string>('');
+
+    // Initialize userId on mount and create first conversation
+    useEffect(() => {
+        let storedUserId = localStorage.getItem('chat_user_id');
+        if (!storedUserId) {
+            storedUserId = generateId();
+            localStorage.setItem('chat_user_id', storedUserId);
+        }
+        setUserId(storedUserId);
+
+        // Create initial empty conversation
+        const initialId = generateId();
+        const initial: Conversation = {
+            id: initialId,
+            threadId: generateId(),
+            title: 'New Chat',
+            messages: [],
+            createdAt: Date.now(),
+        };
+        setConversations([initial]);
+        setActiveConversationId(initialId);
+    }, []);
+
+    // Get the currently active conversation
+    const activeConversation = conversations.find(c => c.id === activeConversationId);
+    const messages = activeConversation?.messages ?? [];
+
+    // Generate a short title from the first user message
+    const generateTitle = (content: string): string => {
+        const cleaned = content.replace(/\n/g, ' ').trim();
+        if (cleaned.length <= 35) return cleaned;
+        return cleaned.substring(0, 35) + '…';
+    };
+
+    const sendMessage = useCallback(async (content: string) => {
+        if (!content.trim() || !activeConversationId || !userId) return;
+
+        const userMessage: Message = {
+            id: generateId(),
+            role: 'user',
+            content,
+            timestamp: Date.now(),
+        };
+
+        // Update the active conversation with the new user message
+        setConversations(prev => prev.map(conv => {
+            if (conv.id !== activeConversationId) return conv;
+
+            const isFirstMessage = conv.messages.length === 0;
+            return {
+                ...conv,
+                title: isFirstMessage ? generateTitle(content) : conv.title,
+                messages: [...conv.messages, userMessage],
+            };
+        }));
+
+        setIsLoading(true);
+
+        const currentConv = conversations.find(c => c.id === activeConversationId);
+        const threadId = currentConv?.threadId || '';
+
+        try {
+            const response = await apiSendMessage(content, threadId, userId);
+            setConversations(prev => prev.map(conv => {
+                if (conv.id !== activeConversationId) return conv;
+                return { ...conv, messages: [...conv.messages, response] };
+            }));
+        } catch (error) {
+            console.error('Error sending message:', error);
+            const errorMessage: Message = {
+                id: generateId(),
+                role: 'assistant',
+                content: 'Desculpe, ocorreu um erro ao se comunicar com o agente. Verifique se o backend está rodando.',
+                timestamp: Date.now(),
+            };
+            setConversations(prev => prev.map(conv => {
+                if (conv.id !== activeConversationId) return conv;
+                return { ...conv, messages: [...conv.messages, errorMessage] };
+            }));
+        } finally {
+            setIsLoading(false);
+        }
+    }, [activeConversationId, userId, conversations]);
+
+    const newChat = useCallback(() => {
+        const newId = generateId();
+        const conv: Conversation = {
+            id: newId,
+            threadId: generateId(),
+            title: 'New Chat',
+            messages: [],
+            createdAt: Date.now(),
+        };
+        setConversations(prev => [conv, ...prev]);
+        setActiveConversationId(newId);
+    }, []);
+
+    const switchConversation = useCallback((conversationId: string) => {
+        if (isLoading) return; // Don't switch while loading
+        setActiveConversationId(conversationId);
+    }, [isLoading]);
+
+    const deleteConversation = useCallback((conversationId: string) => {
+        setConversations(prev => {
+            const filtered = prev.filter(c => c.id !== conversationId);
+            // If we deleted the active one, switch to first available or create new
+            if (conversationId === activeConversationId) {
+                if (filtered.length > 0) {
+                    setActiveConversationId(filtered[0].id);
+                } else {
+                    const newId = generateId();
+                    const conv: Conversation = {
+                        id: newId,
+                        threadId: generateId(),
+                        title: 'New Chat',
+                        messages: [],
+                        createdAt: Date.now(),
+                    };
+                    setActiveConversationId(newId);
+                    return [conv];
+                }
+            }
+            return filtered;
+        });
+    }, [activeConversationId]);
+
+    return {
+        messages,
+        conversations,
+        activeConversationId,
+        activeConversation,
+        isLoading,
+        sendMessage,
+        newChat,
+        switchConversation,
+        deleteConversation,
+    };
+}

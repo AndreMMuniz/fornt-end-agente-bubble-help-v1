@@ -1,0 +1,91 @@
+.container {
+    width: 100%;
+    max-width: 840px;
+    padding: 0 20px;
+}
+
+.inputWrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 24px;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    transition: border-color 0.2s;
+}
+
+.inputWrapper:focus-within {
+    border-color: #cbd5e1;
+}
+
+.attachButton {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+}
+
+.textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #1e293b;
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: none;
+    max-height: 150px;
+    padding: 8px 0;
+    outline: none;
+}
+
+.textarea::placeholder {
+    color: #94a3b8;
+}
+
+.sendButton {
+    background: hsl(var(--accent));
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.1s;
+    flex-shrink: 0;
+}
+
+.sendButton:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.sendButton:disabled {
+    background-color: #f1f5f9;
+    color: #cbd5e1;
+    cursor: not-allowed;
+}
+
+.loader {
+    width: 16px;
+    height: 16px;
+    border: 2px solid white;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    animation: rotate 0.8s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
