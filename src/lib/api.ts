@@ -16,8 +16,7 @@ export async function sendMessage(
   threadId: string,
   userId: string,
   language: string = 'pt',
-  image?: string,
-  model?: string
+  image?: string
 ): Promise<Message> {
   const response = await fetch('/api/chat', {
     method: 'POST',
@@ -30,7 +29,6 @@ export async function sendMessage(
       user_id: userId,
       language,
       image,
-      model,
     }),
   });
 

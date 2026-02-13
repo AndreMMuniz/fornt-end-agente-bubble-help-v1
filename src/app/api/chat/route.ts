@@ -30,11 +30,10 @@ export async function POST(request: NextRequest) {
         // Inject the authenticated user's ID (server-side, can't be spoofed)
         const backendBody = {
             message: body.message,
+            thread_id: body.thread_id || null, // Backend requires snake_case
             user_id: session.user.id,
-            thread_id: body.thread_id || null,
-            sources: body.sources || [],
+            user_name: session.user.name || 'User', // Required by new API doc
             language: body.language || 'pt',
-            model: body.model || 'llama3.2-vision:11b', // Ollama vision model
             image: body.image, // Optional image field
         };
 
