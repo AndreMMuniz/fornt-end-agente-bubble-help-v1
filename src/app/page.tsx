@@ -92,21 +92,7 @@ export default function Home() {
             </div>
           )}
 
-          <div className={styles.navSection}>
-            <div className={styles.sectionTitle}>Workspace</div>
-            <div className={styles.navItem}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.navIcon}>
-                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-              </svg>
-              <span className={styles.navLabel}>Templates</span>
-            </div>
-            <div className={styles.navItem}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.navIcon}>
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-              </svg>
-              <span className={styles.navLabel}>Model Settings</span>
-            </div>
-          </div>
+
         </nav>
 
         <div className={styles.sidebarFooter}>
@@ -166,6 +152,7 @@ export default function Home() {
                 key={msg.id}
                 message={msg}
                 onMarkSolution={markAsSolution}
+                userName={userName}
               />
             ))
           )}

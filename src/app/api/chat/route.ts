@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
             thread_id: body.thread_id || null,
             sources: body.sources || [],
             language: body.language || 'pt',
+            image: body.image, // Optional image field
         };
 
         const response = await fetch(`${BACKEND_URL}/chat`, {

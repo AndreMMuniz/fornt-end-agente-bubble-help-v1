@@ -53,14 +53,15 @@ export function useChat() {
         return cleaned.substring(0, 35) + '…';
     };
 
-    const sendMessage = useCallback(async (content: string) => {
-        if (!content.trim() || !activeConversationId || !userId) return;
+    const sendMessage = useCallback(async (content: string, image?: string) => {
+        if ((!content.trim() && !image) || !activeConversationId || !userId) return;
 
         const userMessage: Message = {
             id: generateId(),
             role: 'user',
             content,
             timestamp: Date.now(),
+            image,
         };
 
         // Update the active conversation with the new user message
@@ -81,7 +82,7 @@ export function useChat() {
         const threadId = currentConv?.threadId || '';
 
         try {
-            const response = await apiSendMessage(content, threadId, userId, settings.language);
+            const response = await apiSendMessage(content, threadId, userId, settings.language, image);
             setConversations(prev => prev.map(conv => {
                 if (conv.id !== activeConversationId) return conv;
                 return { ...conv, messages: [...conv.messages, response] };

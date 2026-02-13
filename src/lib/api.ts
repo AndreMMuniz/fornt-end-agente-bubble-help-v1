@@ -6,6 +6,7 @@ export type Message = {
   latency?: number;
   context?: string[];
   isSolution?: boolean;
+  image?: string; // Base64 string
 };
 
 // Calls our own Next.js API route which proxies to the backend
@@ -14,7 +15,8 @@ export async function sendMessage(
   message: string,
   threadId: string,
   userId: string,
-  language: string = 'pt'
+  language: string = 'pt',
+  image?: string
 ): Promise<Message> {
   const response = await fetch('/api/chat', {
     method: 'POST',
@@ -26,6 +28,7 @@ export async function sendMessage(
       thread_id: threadId,
       user_id: userId,
       language,
+      image,
     }),
   });
 

@@ -5,9 +5,10 @@ import styles from './ChatMessage.module.css';
 interface ChatMessageProps {
     message: Message;
     onMarkSolution?: (messageId: string) => void;
+    userName?: string;
 }
 
-export default function ChatMessage({ message, onMarkSolution }: ChatMessageProps) {
+export default function ChatMessage({ message, onMarkSolution, userName }: ChatMessageProps) {
     const isAssistant = message.role === 'assistant';
     const isSolution = message.isSolution;
 
@@ -36,7 +37,7 @@ export default function ChatMessage({ message, onMarkSolution }: ChatMessageProp
 
                 <div className={styles.content}>
                     <div className={styles.roleName}>
-                        {isAssistant ? 'Assistant' : 'You'}
+                        {isAssistant ? 'Assistant' : (userName || 'You')}
                     </div>
 
                     {/* Highlighting wrapper if Solution */}
