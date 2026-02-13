@@ -5,6 +5,7 @@ import type { NextAuthConfig } from 'next-auth';
  * Used by middleware to check authentication without Node.js dependencies.
  */
 export const authConfig = {
+    trustHost: true,
     pages: {
         signIn: '/login',
     },
