@@ -82,7 +82,7 @@ export function useChat() {
         const threadId = currentConv?.threadId || '';
 
         try {
-            const response = await apiSendMessage(content, threadId, userId, settings.language, image);
+            const response = await apiSendMessage(content, threadId, userId, settings.language, image, 'llama3.2-vision:11b');
             setConversations(prev => prev.map(conv => {
                 if (conv.id !== activeConversationId) return conv;
                 return { ...conv, messages: [...conv.messages, response] };
