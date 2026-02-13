@@ -7,6 +7,7 @@ import { useSettings } from '@/hooks/useSettings';
 import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
 import SettingsModal from '@/components/SettingsModal';
+import TypingIndicator from '@/components/TypingIndicator';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -156,6 +157,7 @@ export default function Home() {
               />
             ))
           )}
+          {isLoading && <TypingIndicator />}
           <div ref={messagesEndRef} />
         </div>
 
