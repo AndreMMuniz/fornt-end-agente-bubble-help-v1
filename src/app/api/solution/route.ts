@@ -15,11 +15,11 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json();
-        const { messageId } = body;
+        const { thread_id, question, answer } = body;
 
-        if (!messageId) {
+        if (!thread_id || !question || !answer) {
             return NextResponse.json(
-                { detail: 'Message ID required' },
+                { detail: 'Missing required fields' },
                 { status: 400 }
             );
         }
@@ -34,14 +34,14 @@ export async function POST(request: NextRequest) {
         }
 
         const backendBody = {
-            message_id: messageId,
+            thread_id,
             user_id: session.user.id,
-            feedback: 'solution',
-            timestamp: new Date().toISOString(),
+            question,
+            answer,
+            feedback_type: 'solution',
         };
 
         // Forward to backend
-        // Assuming POST /feedback endpoint as placeholder
         const response = await fetch(`${BACKEND_URL}/feedback`, {
             method: 'POST',
             headers: headers,

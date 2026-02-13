@@ -45,12 +45,20 @@ export async function sendMessage(
   };
 }
 
-export async function markSolution(messageId: string): Promise<void> {
+export async function markSolution(
+  threadId: string,
+  question: string,
+  answer: string
+): Promise<void> {
   await fetch('/api/solution', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ messageId }),
+    body: JSON.stringify({
+      thread_id: threadId,
+      question,
+      answer,
+    }),
   });
 }

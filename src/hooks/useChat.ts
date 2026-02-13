@@ -143,14 +143,30 @@ export function useChat() {
     }, [activeConversationId]);
 
     const markAsSolution = useCallback(async (messageId: string) => {
+        if (!activeConversation) return;
+
+        const currentMessages = activeConversation.messages;
+        const answerIndex = currentMessages.findIndex(m => m.id === messageId);
+        if (answerIndex === -1) return;
+
+        const answer = currentMessages[answerIndex].content;
+
+        // Find the closest user message before this assistant message
+        let question = '';
+        for (let i = answerIndex - 1; i >= 0; i--) {
+            if (currentMessages[i].role === 'user') {
+                question = currentMessages[i].content;
+                break;
+            }
+        }
+
         try {
-            await apiMarkSolution(messageId);
-            // Optional: You could update local state here to show a "Solution Marked" UI
+            await apiMarkSolution(activeConversation.threadId, question, answer);
             console.log('Marked as solution:', messageId);
         } catch (error) {
             console.error('Error marking solution:', error);
         }
-    }, []);
+    }, [activeConversation]);
 
     return {
         messages,
