@@ -1,12 +1,14 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import { useChat } from '@/hooks/useChat';
 import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
 import styles from './page.module.css';
 
 export default function Home() {
+  const { data: session } = useSession();
   const {
     messages,
     conversations,
@@ -19,6 +21,14 @@ export default function Home() {
     deleteConversation,
   } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const userName = session?.user?.name || 'User';
+  const userInitials = userName
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -95,16 +105,22 @@ export default function Home() {
 
         <div className={styles.sidebarFooter}>
           <div className={styles.profile}>
-            <div className={styles.profileAvatar}>JD</div>
+            <div className={styles.profileAvatar}>{userInitials}</div>
             <div className={styles.profileInfo}>
-              <div className={styles.profileName}>John Doe</div>
-              <div className={styles.profilePlan}>Pro Plan</div>
+              <div className={styles.profileName}>{userName}</div>
+              <div className={styles.profilePlan}>{session?.user?.email}</div>
             </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="1"></circle>
-              <circle cx="12" cy="5" r="1"></circle>
-              <circle cx="12" cy="19" r="1"></circle>
-            </svg>
+            <button
+              className={styles.logoutBtn}
+              onClick={() => signOut({ callbackUrl: '/login' })}
+              title="Sign out"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </button>
           </div>
         </div>
       </aside>
