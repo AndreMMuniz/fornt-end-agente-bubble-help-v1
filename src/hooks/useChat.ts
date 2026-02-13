@@ -43,6 +43,9 @@ export function useChat() {
     const activeConversation = conversations.find(c => c.id === activeConversationId);
     const messages = activeConversation?.messages ?? [];
 
+    // Check if the conversation is solved
+    const isChatLocked = messages.some(m => m.isSolution);
+
     // Generate a short title from the first user message
     const generateTitle = (content: string): string => {
         const cleaned = content.replace(/\n/g, ' ').trim();
@@ -162,11 +165,23 @@ export function useChat() {
 
         try {
             await apiMarkSolution(activeConversation.threadId, question, answer);
+
+            // Update local state to mark message as solution
+            setConversations(prev => prev.map(conv => {
+                if (conv.id !== activeConversationId) return conv;
+                return {
+                    ...conv,
+                    messages: conv.messages.map(m =>
+                        m.id === messageId ? { ...m, isSolution: true } : m
+                    )
+                };
+            }));
+
             console.log('Marked as solution:', messageId);
         } catch (error) {
             console.error('Error marking solution:', error);
         }
-    }, [activeConversation]);
+    }, [activeConversationId, activeConversation]);
 
     return {
         messages,
@@ -179,5 +194,6 @@ export function useChat() {
         switchConversation,
         deleteConversation,
         markAsSolution,
+        isChatLocked,
     };
 }

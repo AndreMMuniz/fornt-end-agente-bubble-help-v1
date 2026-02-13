@@ -5,6 +5,7 @@ export type Message = {
   timestamp: number;
   latency?: number;
   context?: string[];
+  isSolution?: boolean;
 };
 
 // Calls our own Next.js API route which proxies to the backend

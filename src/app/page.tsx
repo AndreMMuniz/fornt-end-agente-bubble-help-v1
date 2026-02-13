@@ -23,6 +23,7 @@ export default function Home() {
     switchConversation,
     deleteConversation,
     markAsSolution,
+    isChatLocked,
   } = useChat();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -178,7 +179,14 @@ export default function Home() {
         </button>
 
         <div className={styles.inputArea}>
-          <ChatInput onSendMessage={sendMessage} isLoading={isLoading} />
+          {isChatLocked ? (
+            <div className={styles.lockedMessage}>
+              <span className={styles.lockedIcon}>✨</span>
+              Conversation solved
+            </div>
+          ) : (
+            <ChatInput onSendMessage={sendMessage} isLoading={isLoading} />
+          )}
           <p className={styles.footerNote}>AI Agent can make mistakes. Check important info.</p>
         </div>
       </section>

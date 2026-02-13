@@ -292,6 +292,26 @@
   cursor: pointer;
 }
 
+/* Locked Chat Message (Solved) */
+.lockedMessage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  color: #475569;
+  font-weight: 500;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.lockedIcon {
+  font-size: 1.2rem;
+}
+
 @media (max-width: 768px) {
   .sidebar {
     display: none;

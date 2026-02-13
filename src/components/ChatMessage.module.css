@@ -127,3 +127,52 @@
     background-color: #f1f5f9;
     color: #64748b;
 }
+
+/* Highlighted Solution Message */
+.solutionMessage {
+    background-color: rgba(16, 185, 129, 0.05);
+    /* Very light green */
+    border: 1px solid #10b981;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+    margin-top: 8px;
+}
+
+.solutionBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #10b981;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Prominent Mark as Solution Button */
+.markSolutionBtn {
+    background-color: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    padding: 6px 14px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 12px;
+}
+
+.markSolutionBtn:hover {
+    background-color: #10b981;
+    border-color: #10b981;
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
