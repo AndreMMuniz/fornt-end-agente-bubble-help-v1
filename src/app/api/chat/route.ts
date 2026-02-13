@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
             user_id: session.user.id,
             thread_id: body.thread_id || null,
             sources: body.sources || [],
+            language: body.language || 'pt',
         };
 
         const response = await fetch(`${BACKEND_URL}/chat`, {
