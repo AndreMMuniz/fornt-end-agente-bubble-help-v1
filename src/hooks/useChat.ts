@@ -87,12 +87,12 @@ export function useChat() {
                 if (conv.id !== activeConversationId) return conv;
                 return { ...conv, messages: [...conv.messages, response] };
             }));
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error sending message:', error);
             const errorMessage: Message = {
                 id: generateId(),
                 role: 'assistant',
-                content: 'Desculpe, ocorreu um erro ao se comunicar com o agente. Verifique se o backend está rodando.',
+                content: `Erro: ${error.message || 'Falha na comunicação com o backend'}. Verifique se o backend está rodando corretamente.`,
                 timestamp: Date.now(),
             };
             setConversations(prev => prev.map(conv => {
