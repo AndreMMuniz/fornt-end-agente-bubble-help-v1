@@ -44,3 +44,13 @@ export async function sendMessage(
     context: data.context,
   };
 }
+
+export async function markSolution(messageId: string): Promise<void> {
+  await fetch('/api/solution', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ messageId }),
+  });
+}

@@ -4,9 +4,10 @@ import styles from './ChatMessage.module.css';
 
 interface ChatMessageProps {
     message: Message;
+    onMarkSolution?: (messageId: string) => void;
 }
 
-export default function ChatMessage({ message }: ChatMessageProps) {
+export default function ChatMessage({ message, onMarkSolution }: ChatMessageProps) {
     const isAssistant = message.role === 'assistant';
 
     return (
@@ -54,10 +55,20 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                             </button>
                             <button className={styles.actionBtn}>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                                 </svg>
                             </button>
+                            {onMarkSolution && (
+                                <button
+                                    className={`${styles.actionBtn} ${styles.solutionBtn}`}
+                                    onClick={() => onMarkSolution(message.id)}
+                                    title="Mark as Solution"
+                                >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                </button>
+                            )}
                             <button className={styles.actionBtn}>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <path d="M23 4v6h-6"></path>

@@ -22,6 +22,7 @@ export default function Home() {
     newChat,
     switchConversation,
     deleteConversation,
+    markAsSolution,
   } = useChat();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -160,7 +161,11 @@ export default function Home() {
             </div>
           ) : (
             messages.map((msg) => (
-              <ChatMessage key={msg.id} message={msg} />
+              <ChatMessage
+                key={msg.id}
+                message={msg}
+                onMarkSolution={markAsSolution}
+              />
             ))
           )}
           <div ref={messagesEndRef} />

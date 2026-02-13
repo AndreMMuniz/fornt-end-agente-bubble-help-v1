@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useSettings } from '@/hooks/useSettings';
-import { Message, sendMessage as apiSendMessage } from '@/lib/api';
+import { Message, sendMessage as apiSendMessage, markSolution as apiMarkSolution } from '@/lib/api';
 
 const generateId = () => Math.random().toString(36).substring(2, 11);
 
@@ -142,6 +142,16 @@ export function useChat() {
         });
     }, [activeConversationId]);
 
+    const markAsSolution = useCallback(async (messageId: string) => {
+        try {
+            await apiMarkSolution(messageId);
+            // Optional: You could update local state here to show a "Solution Marked" UI
+            console.log('Marked as solution:', messageId);
+        } catch (error) {
+            console.error('Error marking solution:', error);
+        }
+    }, []);
+
     return {
         messages,
         conversations,
@@ -152,5 +162,6 @@ export function useChat() {
         newChat,
         switchConversation,
         deleteConversation,
+        markAsSolution,
     };
 }
