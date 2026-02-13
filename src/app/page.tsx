@@ -123,7 +123,7 @@ export default function Home() {
         <header className={styles.header}>
           <div className={styles.chatTitleContainer}>
             <h3 className={styles.chatTitle}>{activeConversation?.title || 'New Chat'}</h3>
-            <span className={styles.modelTag}>GPT-4O</span>
+            <span className={styles.modelTag}>Llama 3.2 Vision</span>
           </div>
           <div className={styles.headerActions}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

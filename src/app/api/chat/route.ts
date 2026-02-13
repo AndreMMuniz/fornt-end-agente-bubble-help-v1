@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
             thread_id: body.thread_id || null,
             sources: body.sources || [],
             language: body.language || 'pt',
-            model: body.model || 'gpt-4o', // Backend now requires model
+            model: body.model || 'llama3.2-vision:11b', // Ollama vision model
             image: body.image, // Optional image field
         };
 
