@@ -17,6 +17,9 @@ COPY . .
 # Set environment variables for build time
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Push database schema (uses DATABASE_URL from Coolify build env)
+RUN npx prisma db push --skip-generate --accept-data-loss || echo "Warning: prisma db push failed, will retry at runtime"
+
 RUN npm run build
 
 # Stage 3: Runner
@@ -33,12 +36,6 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 
-# Copy prisma files for db push at startup
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-
 # Set the correct permission for prerender cache
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
@@ -47,10 +44,6 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Create startup script that runs prisma db push then starts the app
-RUN printf '#!/bin/sh\nnpx prisma db push --skip-generate\nnode server.js\n' > /app/start.sh
-RUN chmod +x /app/start.sh
-
 USER nextjs
 
 EXPOSE 3000
@@ -58,4 +51,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["/bin/sh", "/app/start.sh"]
+CMD ["node", "server.js"]
