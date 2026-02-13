@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/auth';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 const BACKEND_API_KEY = process.env.BACKEND_API_KEY;
 
 export async function POST(request: NextRequest) {
     try {
+        // Get the authenticated session
+        const session = await auth();
+        if (!session?.user?.id) {
+            return NextResponse.json(
+                { detail: 'Unauthorized' },
+                { status: 401 }
+            );
+        }
+
         const body = await request.json();
 
         // Preparing headers for the backend
@@ -17,10 +27,18 @@ export async function POST(request: NextRequest) {
             headers['X-API-Key'] = BACKEND_API_KEY;
         }
 
+        // Inject the authenticated user's ID (server-side, can't be spoofed)
+        const backendBody = {
+            message: body.message,
+            user_id: session.user.id,
+            thread_id: body.thread_id || null,
+            sources: body.sources || [],
+        };
+
         const response = await fetch(`${BACKEND_URL}/chat`, {
             method: 'POST',
             headers: headers,
-            body: JSON.stringify(body),
+            body: JSON.stringify(backendBody),
         });
 
         if (!response.ok) {

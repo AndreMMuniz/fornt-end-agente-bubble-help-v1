@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { Message, sendMessage as apiSendMessage } from '@/lib/api';
 
 const generateId = () => Math.random().toString(36).substring(2, 11);
@@ -14,21 +15,16 @@ export type Conversation = {
 };
 
 export function useChat() {
+    const { data: session } = useSession();
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [activeConversationId, setActiveConversationId] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
-    const [userId, setUserId] = useState<string>('');
 
-    // Initialize userId on mount and create first conversation
+    // Use the authenticated user's ID from the session
+    const userId = session?.user?.id || '';
+
+    // Create initial conversation on mount
     useEffect(() => {
-        let storedUserId = localStorage.getItem('chat_user_id');
-        if (!storedUserId) {
-            storedUserId = generateId();
-            localStorage.setItem('chat_user_id', storedUserId);
-        }
-        setUserId(storedUserId);
-
-        // Create initial empty conversation
         const initialId = generateId();
         const initial: Conversation = {
             id: initialId,
