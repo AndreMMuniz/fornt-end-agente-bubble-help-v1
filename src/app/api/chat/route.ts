@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
+const BACKEND_URL = process.env.BACKEND_URL || 'https://api-agent.munizandre.com';
 const BACKEND_API_KEY = process.env.BACKEND_API_KEY;
 
 export async function POST(request: NextRequest) {
